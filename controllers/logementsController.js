@@ -1,3 +1,4 @@
+const { log } = require('node:console');
 let logements = require('../data/logements.json');
 
 const getLogements = (req, res) => {
@@ -60,10 +61,24 @@ const deleteLogement = (req, res) => {
   res.status(204).send();
 };
 
+const logmentsfilter = (req, res) => {
+    let results = [...logements];
+    // filtre des logements par la ville (station)
+    if (req.query.station) {
+        results = results.filter(logement => logement.station.toLowerCase() === req.query.station.toLowerCase());
+    }
+    // filtre les logments dapres la capacite
+    if ( res.query.capacite) {
+        results = results.filter(logement => logement.capacite >= parseInt(req.query.capacite))
+    }
+    res.json(results);
+}
+        
 module.exports = {
   getLogements,
   createLogement,
   getLogementById,
   updateLogement,
-  deleteLogement
+  deleteLogement,
+  logmentsfilter
 };

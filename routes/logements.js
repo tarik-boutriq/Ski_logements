@@ -8,5 +8,5 @@ router.post('/', logementsController.createLogement);
 router.get('/:id', logementsController.getLogementById);
 router.put('/:id', logementsController.updateLogement);
 router.delete('/:id', logementsController.deleteLogement);
-
+router.get('/', logementsController.logmentsfilter);
 module.exports = router;

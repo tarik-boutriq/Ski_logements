@@ -12,5 +12,12 @@
     "station": "Annecy",
     "prix_par_nuit": 120,
     "capacite": 6
+  },
+  {
+    "id": 3,
+    "nom": "Appartement",
+    "station": "Rabat",
+    "prix_par_nuit": 50,
+    "capacite": 2
   }
 ]
