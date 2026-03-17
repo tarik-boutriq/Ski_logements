@@ -61,17 +61,18 @@ app.put('/logements/:id', (req, res) => {
   if(!logement){
     return res.status(404).json({ message: "Logement non trouvé !" });
   } else {
+    const body = req.body || {};
     const logementModifie = {
       id: Id,
-      nom: req.body.nom || logement.nom,
-      station: req.body.station || logement.station,
-      prix_par_nuit: req.body.prix_par_nuit || logement.prix_par_nuit,
-      capacite: req.body.capacite || logement.capacite
+      nom: body.nom || logement.nom,
+      station: body.station || logement.station,
+      prix_par_nuit: body.prix_par_nuit || logement.prix_par_nuit,
+      capacite: body.capacite || logement.capacite
     };
     
-  const index = logements.indexOf(logement);
-  logements[index] = logementModifie;
-  res.status(200).json(logementModifie);
+    const index = logements.indexOf(logement);
+    logements[index] = logementModifie;
+    res.status(200).json(logementModifie);
   }
 
 });
