@@ -37,17 +37,21 @@ app.get('/logements/:id', (req, res) => {
   }
 });
 
-app.post('/logements', (req, res) => {
-  const nouveauLogement = req.body; 
-  
-  const nouvelId = logements.length > 0 ? logements[logements.length - 1].id + 1 : 1;
-  nouveauLogement.id = nouvelId;
+app.post('/logements',(req, res) => {
+ const { nom, station, prix_par_nuit ,capacite } = req.body;
 
-  logements.push(nouveauLogement);
+  const newLogement = {
+    id: logements.length + 1,
+    nom,
+    station,
+    prix_par_nuit,
+    capacite
+  };
 
-  res.status(201).json(nouveauLogement); 
+  logements.push(newLogement);
+  res.status(201).json(newLogement);
 });
 
 app.listen(port, () => {
-  console.log(`Serveur ski démarré sur http://localhost:${port}/logements`);
+  console.log(`http://localhost:${port}/logements`);
 });
