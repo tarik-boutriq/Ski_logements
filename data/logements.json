@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "nom": "Chalet des Neiges",
+    "station": "Chamonix",
+    "prix_par_nuit": 150,
+    "capacite": 4
+  },
+  {
+    "id": 2,
+    "nom": "Appartement du Lac",
+    "station": "Annecy",
+    "prix_par_nuit": 120,
+    "capacite": 6
+  }
+]
