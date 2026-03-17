@@ -77,6 +77,12 @@ app.put('/logements/:id', (req, res) => {
 
 });
 
+app.delete('/logements/:id', (req, res) => {
+  const Id = parseInt(req.params.id);
+  logements = logements.filter(l => l.id !== Id);
+  res.status(204).send();
+});
+
 app.listen(port, () => {
   console.log(`http://localhost:${port}/logements`);
 });
