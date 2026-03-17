@@ -1,22 +1,40 @@
 const { log } = require('node:console');
 let logements = require('../data/logements.json');
+let reservations = require('../data/reservations.json');
+let clients = resuire('../data/client.json');
 
 const getLogements = (req, res) => {
-  res.json(logements);
+    let results = [...logements];
+    if (req.query.station) {
+        results = results.filter(logement => logement.station === req.query.station
+        );
+    }
+    if (req.query.capacite) {
+        results = results.filter(logement => logement.capacite >= parseInt(req.query.capacite)
+        );
+    }
+    if (req.query.prix_par_nuit) {
+        results = results.filter(logement => logement.prix_par_nuit <= parseInt(req.query.prix_par_nuit)
+        );
+    }
+    if (results.length != 0) {
+        res.json(results);
+    } else {
+        res.status(404).json({ 
+            message: "Aucun logement !!" 
+        });
+    }
 };
 
 const createLogement = (req, res) => {
   const { nom, station, prix_par_nuit, capacite } = req.body;
-  
-  const maxId = logements.length > 0 ? Math.max(...logements.map(l => l.id)) : 0;
-
   const newLogement = {
-    id: maxId + 1,
+    id: logements.length + 1,
     nom,
     station,
     prix_par_nuit,
     capacite
-  };
+};
 
   logements.push(newLogement);
   res.status(201).json(newLogement);
@@ -61,24 +79,11 @@ const deleteLogement = (req, res) => {
   res.status(204).send();
 };
 
-const logmentsfilter = (req, res) => {
-    let results = [...logements];
-    // filtre des logements par la ville (station)
-    if (req.query.station) {
-        results = results.filter(logement => logement.station.toLowerCase() === req.query.station.toLowerCase());
-    }
-    // filtre les logments dapres la capacite
-    if ( res.query.capacite) {
-        results = results.filter(logement => logement.capacite >= parseInt(req.query.capacite))
-    }
-    res.json(results);
-}
-        
+
 module.exports = {
   getLogements,
   createLogement,
   getLogementById,
   updateLogement,
   deleteLogement,
-  logmentsfilter
 };
