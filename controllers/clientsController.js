@@ -1,96 +1,141 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const getclients = async (req, res) => {
-    let results = await prisma.client.findMany();
+const getclients = async (req, res, next) => {
+  try {
+    const filters = {};
     
     if (req.query.nom_de_client) {
-        results = results.filter(client => client.nom_de_client === req.query.nom_de_client);
+        filters.nom_de_client = { contains: req.query.nom_de_client };
     }
     if (req.query.prenom_de_client) {
-        results = results.filter(client => client.prenom_de_client >= parseInt(req.query.prenom_de_client));
+        filters.prenom_de_client = { contains: req.query.prenom_de_client };
     }
+    if (req.query.email) {
+        filters.email = req.query.email;
+    }
+
+    let tri = {};
+    if (req.query.tri_nom) {
+        tri.nom_de_client = req.query.tri_nom;
+    }
+
+    let results = await prisma.client.findMany({
+      where: filters,
+      orderBy: Object.keys(tri).length > 0 ? tri : undefined
+    });
+    
     if (results.length != 0) {
         res.json(results);
     } else {
-        res.status(404).json({ message: "Aucun client !!" });
+        const error = new Error("Aucun client !!");
+        error.status = 404;
+        throw error;
     }
-};
-
-const createClient = async (req, res) => {
-  const { nom_de_client, prenom_de_client, age} = req.body;
-
-  const clientsExistants = await prisma.client.findMany({
-      orderBy: { custom_id: 'desc' },
-      take: 1
-  });
-  
-  let newId;
-  
-  if (clientsExistants.length > 0) {
-      newId = clientsExistants[0].custom_id + 1;
-  } else {
-      newId = 1;
-  }
-
-  const newClient = {
-    custom_id: newId,
-    nom_de_client,
-    prenom_de_client,
-    age
-  };
-
-  await prisma.client.create({ data: newClient });
-  res.status(201).json(newClient);
-};
-
-const getClientById = async (req, res) => {
-  const Id = parseInt(req.params.id);
-  
-  const client = await prisma.client.findUnique({
-      where: { custom_id: Id }
-  });
-
-  if (client) {
-    res.json(client);
-  } else {
-    res.status(404).json({ message: "client non trouvé !" });
+  } catch (err) {
+    next(err);
   }
 };
 
-const updateClient = async (req, res) => {
-  const Id = parseInt(req.params.id);
+const createClient = async (req, res, next) => {
+  try {
+    const { nom_de_client, prenom_de_client, email, numero, age } = req.body;
 
-  const client = await prisma.client.findUnique({
-      where: { custom_id: Id }
-  });
-
-  if (!client) {
-    return res.status(404).json({ message: "client non trouvé !" });
-  } else {
-    const body = req.body || {};
-    const clientModifie = {
-      nom_de_client: body.nom_de_client || client.nom_de_client,
-      prenom_de_client: body.prenom_de_client || client.prenom_de_client,
-      age: body.age || client.age
-    };
-    
-    await prisma.client.update({
-        where: { custom_id: Id },
-        data: clientModifie
+    const clientExistant = await prisma.client.findFirst({
+        where: { email: email }
     });
-    res.status(200).json({ custom_id: Id, ...clientModifie });
+
+    if (clientExistant) {
+        const error = new Error("Conflit : Un client avec cet email existe déjà !");
+        error.status = 409;
+        throw error;
+    }
+
+    const newClient = await prisma.client.create({
+      data: {
+        nom_de_client,
+        prenom_de_client,
+        email,
+        numero: parseInt(numero),
+        age
+      }
+    });
+
+    res.status(201).json(newClient);
+  } catch (err) {
+    next(err);
   }
 };
 
-const deleteClient = async (req, res) => {
-  const Id = parseInt(req.params.id);
-  
-  await prisma.client.delete({
-      where: { custom_id: Id }
-  });
-  
-  res.status(204).send();
+const getClientById = async (req, res, next) => {
+  try {
+    const client = await prisma.client.findUnique({
+        where: { id: req.params.id }
+    });
+
+    if (client) {
+      res.json(client);
+    } else {
+        const error = new Error("Client non trouvé !");
+        error.status = 404;
+        throw error;
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+const updateClient = async (req, res, next) => {
+  try {
+    const client = await prisma.client.findUnique({
+        where: { id: req.params.id }
+    });
+
+    if (!client) {
+        const error = new Error("Client non trouvé !");
+        error.status = 404;
+        throw error;
+    } else {
+      const body = req.body || {};
+      
+      const clientModifie = await prisma.client.update({
+          where: { id: req.params.id },
+          data: {
+            nom_de_client: body.nom_de_client || client.nom_de_client,
+            prenom_de_client: body.prenom_de_client || client.prenom_de_client,
+            email: body.email || client.email,
+            numero: body.numero ? parseInt(body.numero) : client.numero,
+            age: body.age || client.age
+          }
+      });
+
+      res.status(200).json(clientModifie);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteClient = async (req, res, next) => {
+  try {
+    const client = await prisma.client.findUnique({
+        where: { id: req.params.id }
+    });
+
+    if (!client) {
+        const error = new Error("Client non trouvé !");
+        error.status = 404;
+        throw error;
+    }
+
+    await prisma.client.delete({
+        where: { id: req.params.id }
+    });
+    
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
 };
 
 module.exports = {

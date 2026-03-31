@@ -1,21 +1,146 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const getReservation = async (req, res) => {
+const getReservation = async (req, res, next) => {
     try {
-        let results = await prisma.reservation.findMany(); 
+        const filters = {};
+        
+        if (req.query.logement_id) filters.logement_id = req.query.logement_id;
+        if (req.query.client_id) filters.client_id = req.query.client_id;
+
+        let results = await prisma.reservation.findMany({
+            where: filters,
+            include: {
+                logement: true,
+                client: true
+            },
+            orderBy: {
+                start: 'asc'
+            }
+        }); 
         
         if (results.length !== 0) {
             res.json(results);
         } else {
-            res.status(404).json({ message: "Aucune réservation trouvée !!" });
+            const error = new Error("Aucune réservation trouvée !!");
+            error.status = 404;
+            throw error;
         }
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erreur lors de la récupération des données" }); 
+        next(error); 
+    }
+};
+
+const createReservation = async (req, res, next) => {
+    try {
+        const { logement_id, client_id, start, end } = req.body;
+
+        const reservationExistante = await prisma.reservation.findFirst({
+            where: {
+                logement_id: logement_id,
+                start: start,
+                end: end
+            }
+        });
+
+        if (reservationExistante) {
+            const error = new Error("Conflit : Ce logement est déjà réservé pour ces dates !");
+            error.status = 409;
+            throw error;
+        }
+
+        const newReservation = await prisma.reservation.create({
+            data: {
+                logement_id,
+                client_id,
+                start,
+                end
+            }
+        });
+
+        res.status(201).json(newReservation);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getReservationById = async (req, res, next) => {
+    try {
+        const reservation = await prisma.reservation.findUnique({
+            where: { id: req.params.id },
+            include: {
+                logement: true,
+                client: true
+            }
+        });
+
+        if (reservation) {
+            res.json(reservation);
+        } else {
+            const error = new Error("Réservation non trouvée !");
+            error.status = 404;
+            throw error;
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+const updateReservation = async (req, res, next) => {
+    try {
+        const reservation = await prisma.reservation.findUnique({
+            where: { id: req.params.id }
+        });
+
+        if (!reservation) {
+            const error = new Error("Réservation non trouvée !");
+            error.status = 404;
+            throw error;
+        } else {
+            const body = req.body || {};
+            
+            const reservationModifie = await prisma.reservation.update({
+                where: { id: req.params.id },
+                data: {
+                    logement_id: body.logement_id || reservation.logement_id,
+                    client_id: body.client_id || reservation.client_id,
+                    start: body.start || reservation.start,
+                    end: body.end || reservation.end
+                }
+            });
+            res.status(200).json(reservationModifie);
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+const deleteReservation = async (req, res, next) => {
+    try {
+        const reservation = await prisma.reservation.findUnique({
+            where: { id: req.params.id }
+        });
+
+        if (!reservation) {
+            const error = new Error("Réservation non trouvée !");
+            error.status = 404;
+            throw error;
+        }
+
+        await prisma.reservation.delete({
+            where: { id: req.params.id }
+        });
+        
+        res.status(204).send();
+    } catch (error) {
+        next(error);
     }
 };
 
 module.exports = {
-  getReservation
+    getReservation,
+    createReservation,
+    getReservationById,
+    updateReservation,
+    deleteReservation
 };

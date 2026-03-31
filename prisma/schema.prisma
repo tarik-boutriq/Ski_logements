@@ -9,26 +9,33 @@ generator client {
 
 model Logement {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
-  custom_id     Int    @unique
   nom           String
   station       String
   prix_par_nuit Int
   capacite      Int
+  type          String
+  description   String?
+  
+  reservations  Reservation[]
 }
 
 model Client {
   id               String @id @default(auto()) @map("_id") @db.ObjectId
-  custom_id        Int    @unique
   nom_de_client    String
   prenom_de_client String
+  email            String
+  numero           Int
   age              String
+
+  reservations     Reservation[]
 }
 
 model Reservation {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
-  custom_id   Int    @unique
-  logement_id Int
-  client_id   Int
+  logement_id String @db.ObjectId
+  client_id   String @db.ObjectId
+  logement    Logement @relation(fields: [logement_id], references: [id])
+  client      Client   @relation(fields: [client_id], references: [id])
   start       String
   end         String
 }
