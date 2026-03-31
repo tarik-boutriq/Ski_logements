@@ -9,13 +9,14 @@ API REST pour une plateforme de location de logements au ski.
 - Prisma
 - MongoDB Atlas
 - express-validator
+- Swagger 
 
 ## Installation
 
 ### 1. Cloner le projet
 
 ```bash
-git clone 
+git clone https://github.com/tarik-boutriq/Ski_logements.git
 cd Ski_logements
 ```
 
@@ -32,6 +33,7 @@ Créer un fichier `.env` à la racine du projet :
 ```
 DATABASE_URL="mongodb+srv://tarikboutriq7_db_user:xKWPQPn14aF1EnfY@cluster0.1yqkeax.mongodb.net/Ski_Logements?appName=Cluster0"
 ```
+Le serveur tourne sur http://localhost:3001
 
 ### 4. Générer le client Prisma
 
@@ -51,6 +53,23 @@ npx prisma db push
 node app.js
 ```
 
-Le serveur tourne sur http://localhost:3001
+## 7. Structure du projet
 
+```bash
+Ski_Logements/
+├── controllers/          # Contrôleurs métier
+├── middlewares/          # Middlewares
+├── prisma/               # Schéma Prisma et configuration de la base de données
+├── routes/               # Fichiers de routes annotés avec Swagger
+├── node_modules/         # Dépendances npm
+│
+├── app.js                # Point d'entrée de l'application
+├── package.json          # Fichier de configuration du projet npm
+├── .env                  # Variables d'environnement
+```
+
+## Auteur
+
+Boutriq Tarik
+Aboud Mehdi
 ---

@@ -11,8 +11,18 @@ const getReservation = async (req, res, next) => {
         let results = await prisma.reservation.findMany({
             where: filters,
             include: {
-                logement: true,
-                client: true
+                logement: {
+                    select: {
+                        nom: true,
+                        station: true
+                    }
+                },
+                client: {
+                    select: {
+                        nom_de_client: true,
+                        prenom_de_client: true
+                    }
+                }
             },
             orderBy: {
                 start: 'asc'
@@ -20,7 +30,9 @@ const getReservation = async (req, res, next) => {
         }); 
         
         if (results.length !== 0) {
-            res.json(results);
+            res.status(200).json({
+                data: results
+            });
         } else {
             const error = new Error("Aucune réservation trouvée !!");
             error.status = 404;
@@ -58,7 +70,7 @@ const createReservation = async (req, res, next) => {
             }
         });
 
-        res.status(201).json(newReservation);
+        res.status(201).json({ data: newReservation });
     } catch (error) {
         next(error);
     }
@@ -69,13 +81,23 @@ const getReservationById = async (req, res, next) => {
         const reservation = await prisma.reservation.findUnique({
             where: { id: req.params.id },
             include: {
-                logement: true,
-                client: true
+                logement: {
+                    select: {
+                        nom: true,
+                        station: true
+                    }
+                },
+                client: {
+                    select: {
+                        nom_de_client: true,
+                        prenom_de_client: true
+                    }
+                }
             }
         });
 
         if (reservation) {
-            res.json(reservation);
+            res.status(200).json({ data: reservation });
         } else {
             const error = new Error("Réservation non trouvée !");
             error.status = 404;
@@ -108,7 +130,7 @@ const updateReservation = async (req, res, next) => {
                     end: body.end || reservation.end
                 }
             });
-            res.status(200).json(reservationModifie);
+            res.status(200).json({ data: reservationModifie });
         }
     } catch (error) {
         next(error);

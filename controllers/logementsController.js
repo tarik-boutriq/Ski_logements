@@ -25,7 +25,7 @@ const getLogements = async (req, res, next) => {
     });
     
     if (results.length != 0) {
-        res.json(results);
+        res.status(200).json({ data: results });
     } else {
         const error = new Error("Aucun logement !!");
         error.status = 404;
@@ -64,7 +64,7 @@ const createLogement = async (req, res, next) => {
       }
     });
 
-    res.status(201).json(newLogement);
+    res.status(201).json({ data: newLogement });
   } catch (err) {
     next(err);
   }
@@ -77,7 +77,7 @@ const getLogementById = async (req, res, next) => {
     });
 
     if (logement) {
-      res.json(logement);
+      res.status(200).json({ data: logement });
     } else {
       const error = new Error("Logement non trouvé !");
       error.status = 404;
@@ -113,7 +113,8 @@ const updateLogement = async (req, res, next) => {
           }
       });
       
-      res.status(200).json(logementModifie);
+      // Enveloppe la réponse dans "data"
+      res.status(200).json({ data: logementModifie });
     }
   } catch (err) {
     next(err);

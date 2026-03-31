@@ -26,7 +26,7 @@ const getclients = async (req, res, next) => {
     });
     
     if (results.length != 0) {
-        res.json(results);
+        res.status(200).json({ data: results });
     } else {
         const error = new Error("Aucun client !!");
         error.status = 404;
@@ -61,7 +61,7 @@ const createClient = async (req, res, next) => {
       }
     });
 
-    res.status(201).json(newClient);
+    res.status(201).json({ data: newClient });
   } catch (err) {
     next(err);
   }
@@ -74,7 +74,7 @@ const getClientById = async (req, res, next) => {
     });
 
     if (client) {
-      res.json(client);
+      res.status(200).json({ data: client });
     } else {
         const error = new Error("Client non trouvé !");
         error.status = 404;
@@ -109,7 +109,7 @@ const updateClient = async (req, res, next) => {
           }
       });
 
-      res.status(200).json(clientModifie);
+      res.status(200).json({ data: clientModifie });
     }
   } catch (err) {
     next(err);
