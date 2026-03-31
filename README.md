@@ -15,7 +15,7 @@ API REST pour une plateforme de location de logements au ski.
 ### 1. Cloner le projet
 
 ```bash
-git clone <[url-du-repo](https://github.com/tarik-boutriq/Ski_logements.git)>
+git clone 
 cd Ski_logements
 ```
 
