@@ -15,7 +15,7 @@ API REST pour une plateforme de location de logements au ski.
 ### 1. Cloner le projet
 
 ```bash
-git clone <url-du-repo>
+git clone <[url-du-repo](https://github.com/tarik-boutriq/Ski_logements.git)>
 cd Ski_logements
 ```
 
@@ -30,7 +30,7 @@ npm install
 Créer un fichier `.env` à la racine du projet :
 
 ```
-DATABASE_URL="mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/ski_logements?retryWrites=true&w=majority"
+DATABASE_URL="mongodb+srv://tarikboutriq7_db_user:xKWPQPn14aF1EnfY@cluster0.1yqkeax.mongodb.net/Ski_Logements?appName=Cluster0"
 ```
 
 ### 4. Générer le client Prisma
