@@ -113,7 +113,6 @@ const updateLogement = async (req, res, next) => {
           }
       });
       
-      // Enveloppe la réponse dans "data"
       res.status(200).json({ data: logementModifie });
     }
   } catch (err) {
