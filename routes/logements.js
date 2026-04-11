@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { check, param } = require('express-validator');
 const validate = require('../middlewares/validator');
+const auth = require('../middlewares/authMiddleware');
 
 const logementsController = require('../controllers/logementsController');
 
@@ -20,9 +21,11 @@ const idValidationRule = [
 
 router.get('/', logementsController.getLogements);
 router.get('/:id', validate(idValidationRule), logementsController.getLogementById);
-router.post('/', validate(logementValidationRules), logementsController.createLogement);
-router.put('/:id', validate([...idValidationRule, ...logementValidationRules]), logementsController.updateLogement);
-router.delete('/:id', validate(idValidationRule), logementsController.deleteLogement);
+
+
+router.post('/', auth, validate(logementValidationRules), logementsController.createLogement);
+router.put('/:id', auth, validate([...idValidationRule, ...logementValidationRules]), logementsController.updateLogement);
+router.delete('/:id', auth, validate(idValidationRule), logementsController.deleteLogement);
 
 module.exports = router;
 

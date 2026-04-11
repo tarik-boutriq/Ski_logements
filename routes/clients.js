@@ -3,6 +3,8 @@ const router = express.Router();
 const { check, param } = require('express-validator');
 const validate = require('../middlewares/validator');
 
+const auth = require('../middlewares/authMiddleware');
+
 const clientsController = require('../controllers/clientsController');
 
 const clientValidationRules = [
@@ -15,15 +17,14 @@ const idValidationRule = [
     param('id').isMongoId().withMessage('L\'identifiant du client est invalide')
 ];
 
-router.get('/', clientsController.getclients);
-router.get('/:id', validate(idValidationRule), clientsController.getClientById);
-router.post('/', validate(clientValidationRules), clientsController.createClient);
-router.put('/:id', validate([idValidationRule, clientValidationRules]), clientsController.updateClient);
-router.delete('/:id', validate(idValidationRule), clientsController.deleteClient);
+
+router.get('/', auth, clientsController.getclients);
+router.get('/:id', auth, validate(idValidationRule), clientsController.getClientById);
+router.post('/', auth, validate(clientValidationRules), clientsController.createClient);
+router.put('/:id', auth, validate([...idValidationRule, ...clientValidationRules]), clientsController.updateClient);
+router.delete('/:id', auth, validate(idValidationRule), clientsController.deleteClient);
 
 module.exports = router;
-
-
 
 /**
  * @swagger

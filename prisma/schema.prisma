@@ -39,3 +39,11 @@ model Reservation {
   start       String
   end         String
 }
+
+model User {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  email    String @unique
+  password String
+  nom      String
+  prenom   String
+}

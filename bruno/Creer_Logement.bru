@@ -1,0 +1,26 @@
+meta {
+  name: 4. Créer Logement (Protégé)
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:3001/logements
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: COLLE_TON_TOKEN_ICI
+}
+
+body:json {
+  {
+    "nom": "Chalet Mont Blanc",
+    "station": "Chamonix",
+    "prix_par_nuit": 150,
+    "capacite": 4,
+    "type": "Chalet",
+    "description": "Un beau chalet au pied des pistes."
+  }
+}

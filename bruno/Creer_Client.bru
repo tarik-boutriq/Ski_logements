@@ -1,0 +1,23 @@
+meta {
+  name: 5. Créer Client
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:3001/clients
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "nom_de_client": "Martin",
+    "prenom_de_client": "Sophie",
+    "age": 30
+  }
+}

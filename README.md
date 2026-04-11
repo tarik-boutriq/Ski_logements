@@ -9,14 +9,26 @@ API REST pour une plateforme de location de logements au ski.
 - Prisma
 - MongoDB Atlas
 - express-validator
-- Swagger 
+- Swagger (Documentation)
+- JSON Web Token (JWT) (Authentification)
+- express-rate-limit (Sécurité anti-spam)
+- Winston (Système de logs professionnels)
+- Bruno (Collection de requêtes de test)
+
+## Fonctionnalités
+
+- CRUD complet pour les Logements, Clients et Réservations.
+- Sécurité : Routes protégées par token JWT.
+- Protection : Limitation des requêtes (Rate Limiting) pour éviter les attaques DDoS.
+- Traçabilité : Historique et journalisation des erreurs dans des fichiers de logs.
+- Documentation : Interface Swagger interactive.
 
 ## Installation
 
 ### 1. Cloner le projet
 
 ```bash
-git clone https://github.com/tarik-boutriq/Ski_logements.git
+git clone [https://github.com/tarik-boutriq/Ski_logements.git](https://github.com/tarik-boutriq/Ski_logements.git)
 cd Ski_logements
 ```
 
@@ -26,14 +38,15 @@ cd Ski_logements
 npm install
 ```
 
-### 3. Configurer le fichier .env
+### 3. Configurer les variables d'environnement
 
-Créer un fichier `.env` à la racine du projet :
+Créer un fichier `.env` à la racine du projet en utilisant le modèle fourni :
 
+```bash
+cp .env.example .env
 ```
-DATABASE_URL="mongodb+srv://tarikboutriq7_db_user:xKWPQPn14aF1EnfY@cluster0.1yqkeax.mongodb.net/Ski_Logements?appName=Cluster0"
-```
-Le serveur tourne sur http://localhost:3001
+
+Le serveur tourne par défaut sur http://localhost:3001
 
 ### 4. Générer le client Prisma
 
@@ -53,23 +66,38 @@ npx prisma db push
 node app.js
 ```
 
-## 7. Structure du projet
+## Structure du projet
 
 ```bash
 Ski_Logements/
+├── bruno/                # Collection de tests API
 ├── controllers/          # Contrôleurs métier
-├── middlewares/          # Middlewares
+├── middlewares/          # Middlewares (auth, validation, logger)
 ├── prisma/               # Schéma Prisma et configuration de la base de données
 ├── routes/               # Fichiers de routes annotés avec Swagger
 ├── node_modules/         # Dépendances npm
 │
 ├── app.js                # Point d'entrée de l'application
 ├── package.json          # Fichier de configuration du projet npm
-├── .env                  # Variables d'environnement
+├── .env.example          # Modèle des variables d'environnement
+├── .gitignore            # Fichiers ignorés par Git
 ```
 
-## Auteur
+## Documentation de l'API
+
+Une fois le serveur lancé, la documentation interactive Swagger est disponible à l'adresse suivante :
+👉 `http://localhost:3001/api-docs`
+
+## Tests de l'API (Bruno)
+
+Le dossier `bruno/` contient toutes les requêtes nécessaires pour tester l'API.
+1. Ouvrez le logiciel [Bruno](https://www.usebruno.com/).
+2. Cliquez sur "Open Collection" et sélectionnez le dossier `bruno/` du projet.
+3. Commencez par la requête `1. Inscription` puis `2. Connexion` pour récupérer votre Token d'authentification.
+
+## Auteurs
 
 Boutriq Tarik
 Aboud Mehdi
----
+```
+

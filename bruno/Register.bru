@@ -1,0 +1,20 @@
+meta {
+  name: 1. Inscription
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3001/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "professeur@ski.com",
+    "password": "motdepasse123",
+    "nom": "Professeur",
+    "prenom": "Test"
+  }
+}

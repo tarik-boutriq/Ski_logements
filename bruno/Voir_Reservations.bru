@@ -1,0 +1,15 @@
+meta {
+  name: 7. Voir les Réservations
+  type: http
+  seq: 7
+}
+
+get {
+  url: http://localhost:3001/reservations/REMPLACE_PAR_L_ID_DE_LA_RESERVATION
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

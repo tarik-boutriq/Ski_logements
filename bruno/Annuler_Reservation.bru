@@ -1,0 +1,15 @@
+meta {
+  name: 9. Annuler la Réservation
+  type: http
+  seq: 9
+}
+
+delete {
+  url: http://localhost:3001/reservations/REMPLACE_PAR_L_ID_DE_LA_RESERVATION
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
